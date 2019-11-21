@@ -50,6 +50,7 @@ class SearchProblem:
         state, 'action' is the action required to get there, and 'stepCost' is
         the incremental cost of expanding to that successor.
         """
+
         util.raiseNotDefined()
 
     def getCostOfActions(self, actions):
@@ -108,12 +109,38 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    pq = util.PriorityQueue()
+    start = problem.getStartState()
+    pq.push(start,heuristic(start,problem))
+    cost_so_far = {}
+    cost_so_far[start] = 0
+    came_from = {}
+    came_from[start] = (None,None)
+    actions =[]
+
+    while not pq.isEmpty() :
+        current=pq.pop()
+        if problem.isGoalState(current) :
+            break
+        neighbours = problem.getSuccessors(current)
+        for (next,action,cost) in neighbours :
+            new_cost = cost_so_far[current] + cost
+            if next not in cost_so_far or new_cost < cost_so_far[next] :
+                cost_so_far[next] = new_cost
+                priority = new_cost + heuristic(next,problem)
+                pq.push(next, priority)
+                came_from[next] = (current,action)
+
+    # exiting the while loop when current == goalstate , now time to trace back !
+    while current != start :
+        parent,action = came_from[current]
+        actions.append(action)
+        current = parent
+    
+
+    return actions.reverse()
 
 
-# Abbreviations
-bfs = breadthFirstSearch
-dfs = depthFirstSearch
-astar = aStarSearch
-ucs = uniformCostSearch
+
+
