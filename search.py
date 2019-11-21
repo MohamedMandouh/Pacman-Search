@@ -138,9 +138,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         actions.append(action)
         current = parent
     
-
+        for i in range(len(actions)) :
+            print(actions[i])
     return actions.reverse()
 
-
+# Abbreviations
+bfs = breadthFirstSearch
+dfs = depthFirstSearch
+astar = aStarSearch
+ucs = uniformCostSearch
 
 
