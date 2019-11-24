@@ -177,7 +177,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         parent,action = came_from[current]
         actions.append(action)
         current = parent
-    actiions = actions.reverse()    
+    actions.reverse()    
     return  actions
 
 # Abbreviations
