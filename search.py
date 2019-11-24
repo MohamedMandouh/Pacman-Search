@@ -92,6 +92,11 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+    
+           
+
+
+
 
 
 def breadthFirstSearch(problem):
@@ -172,10 +177,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         parent,action = came_from[current]
         actions.append(action)
         current = parent
-    
-        for i in range(len(actions)) :
-            print(actions[i])
-    return actions.reverse()
+    actiions = actions.reverse()    
+    return  actions
 
 # Abbreviations
 bfs = breadthFirstSearch
