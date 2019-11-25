@@ -76,6 +76,8 @@ def tinyMazeSearch(problem):
     return [s, s, w, s, w, w, s, w]
 
 
+
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -90,13 +92,36 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
+
+
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-    
-           
+    st = util.Stack()
+    strt = problem.getStartState()
+    st.push(strt)  
+    visited = []
+    came_from ={}
+    came_from [strt] =(None,None)
 
-
-
+    while not st.isEmpty():
+        state = st.pop()
+        visited.append(state)
+        if problem.isGoalState(state) :
+            break
+        nodes = problem.getSuccessors()
+        for (successor,action,cost) in nodes:
+            if successor not in visited :
+                st.push(successor)
+                came_from[successor] = (state , action)    
+            
+    # exit while
+    actions = []
+    while(state != strt) :
+        (parent,action) =came_from[state]
+        state = parent
+        actions.append(action)
+    actions.reverse()
+    return actions
+      
 
 
 def breadthFirstSearch(problem):
