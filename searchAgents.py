@@ -272,6 +272,11 @@ class CornersProblem(search.SearchProblem):
 
     You must select a suitable state space and successor function
     """
+    # define a Representation of SearchState : 
+    # State : (Postion , NextCorners)
+    # NextCorner is a tuple containing the visited corners so far
+    # the goal is for visited to equal corners
+    
 
     def __init__(self, startingGameState):
         """
@@ -288,6 +293,9 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.visited = ()
+        
+        
 
     def getStartState(self):
         """
@@ -295,14 +303,19 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # No visited corners yet
+        return (self.startingPosition, ())
+        
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # check if  all corners are visited
+        # first sort the tuples then check 
+        
+        return sorted(self.corners) == sorted(state[1])
 
     def getSuccessors(self, state):
         """
@@ -325,6 +338,19 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            x , y = state[0]
+            dx , dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall :
+                if (nextx,nexty) in self.corners and (nextx,nexty) not in self.visited :
+                    # if reached a corner not visited yet add it to visited tuple  
+                    # can't just append it to tuple (immutable)
+                    ls= list(self.visited)
+                    ls.append((nextx,nexty))
+                    self.visited = tuple(ls)
+                successors.append(( 
+                    ((nextx,nexty),self.visited) , action ,  1))  #(state , action cost)
 
         self._expanded += 1 # DO NOT CHANGE
         return successors

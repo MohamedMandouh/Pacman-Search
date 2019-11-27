@@ -104,6 +104,8 @@ def depthFirstSearch(problem):
 
     while not st.isEmpty():
         state = st.pop()
+        if state in visited :
+            continue
         visited.append(state)
         if problem.isGoalState(state) :
             break
@@ -137,6 +139,8 @@ def breadthFirstSearch(problem):
 
     while not st.isEmpty():
         state = st.pop()
+        if state in visited :
+            continue
         visited.append(state)
         if problem.isGoalState(state) :
             break
