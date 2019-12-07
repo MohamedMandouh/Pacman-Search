@@ -133,22 +133,20 @@ def breadthFirstSearch(problem):
     st = util.Queue()
     strt = problem.getStartState()
     st.push(strt)  
-    visited = []
+    visited = [strt]
     came_from ={}
     came_from [strt] =(None,None)
 
     while not st.isEmpty():
         state = st.pop()
-        if state in visited :
-            continue
-        visited.append(state)
         if problem.isGoalState(state) :
             break
         nodes = problem.getSuccessors(state)
         for (successor,action,cost) in nodes:
             if successor not in visited :
                 st.push(successor)
-                came_from[successor] = (state , action)    
+                came_from[successor] = (state , action)
+                visited.append(successor)    
             
     # exit while
     actions = []
