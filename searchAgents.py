@@ -459,6 +459,43 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
+def calcDistanceGraph(problem):
+    walls = problem.walls
+    # print(walls)
+    width = walls.width
+    height = walls.height
+    nodes = width * height
+    INF = 999999
+    adjacencyMatrix = [[INF for i in range(nodes)] for i in range(nodes) ]
+    # initialize all the edges with infinity
+    for i in range(nodes):
+        adjacencyMatrix[i][i] = 0
+    # print(adjacencyMatrix)
+    # build adjacency matrix of the distance between every two cells in the grid
+    for x in range(width):
+        for y in range(height):
+            if walls[x][y]:
+                continue
+            node_index = y * width + x
+            for direction in [Directions.NORTH, Directions.EAST]:
+                dx, dy = Actions.directionToVector(direction)
+                nextx, nexty = int(x + dx), int(y + dy)
+                neighbor_index = nexty * width + nextx
+                if not walls[nextx][nexty]:
+                    adjacencyMatrix[node_index][neighbor_index] = 1
+                    adjacencyMatrix[neighbor_index][node_index] = 1
+    
+
+    # floyd warshall to find all pairs shortest path
+    # works in O(n^3)
+    # can be improbed to O(n^2) using repeated BFS
+    for k in range(nodes):
+        for i in range(nodes):
+            for j in range(nodes):
+                adjacencyMatrix[i][j] = min(adjacencyMatrix[i][j], adjacencyMatrix[i][k] + adjacencyMatrix[k][j])
+    return adjacencyMatrix
+
+
 def foodHeuristic(state, problem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -488,8 +525,31 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    width = foodGrid.width
+    height = foodGrid.height
+    if "distanceGraph" not in problem.heuristicInfo:
+        problem.heuristicInfo["distanceGraph"] = calcDistanceGraph(problem)
+    k = 5 # for great values of k: time increases exponentially, heuristic improves
+    interestingCells = []
+    for x in range(foodGrid.width):
+        for y in range(foodGrid.height):
+            if foodGrid[x][y]:
+                interestingCells.append((x, y))
+    currentIndex = position[1] * width + position[0]
+    if len(interestingCells) == 0:
+        return 0
+    elif len(interestingCells) == 1:
+        foodIndex = interestingCells[0][1] * width + interestingCells[0][0]
+        return problem.heuristicInfo["distanceGraph"][currentIndex][foodIndex]
+    h = 0
+    for c1 in interestingCells:
+        for c2 in interestingCells:
+            index1 = c1[1] * width + c1[0]
+            index2 = c2[1] * width + c2[0]
+            dist = problem.heuristicInfo["distanceGraph"]
+            h = max(h, min(dist[currentIndex][index1] + dist[index1][index2], dist[currentIndex][index2] + dist[index2][index1]))
+    #print(len(interestingCells))
+    return h
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
