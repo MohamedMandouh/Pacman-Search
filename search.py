@@ -127,44 +127,38 @@ def depthFirstSearch(problem):
 
 
 def breadthFirstSearch(problem):
-    """
-    Search the shallowest nodes in the search tree first.
-    [2nd Edition: p 73, 3rd Edition: p 82]
-    """
+    """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    # initialize frontier using initial state of problem
-    current_state = problem.getStartState()
-    frontier = util.Queue()
-    frontier.push(current_state)
 
-    # initialize explored set to be empty
-    explored_set = []
+    st = util.Queue()
+    strt = problem.getStartState()
+    st.push(strt)  
+    visited = []
+    came_from ={}
+    came_from [strt] =(None,None)
 
-    # a dictionary to save how to get to certain states from initial state
-    actions_list = {current_state:[]}
+    while not st.isEmpty():
+        state = st.pop()
+        if state in visited :
+            continue
+        visited.append(state)
+        if problem.isGoalState(state) :
+            break
+        nodes = problem.getSuccessors(state)
+        for (successor,action,cost) in nodes:
+            if successor not in visited :
+                st.push(successor)
+                came_from[successor] = (state , action)    
+            
+    # exit while
+    actions = []
+    while(state != strt) :
+        (parent,action) =came_from[state]
+        state = parent
+        actions.append(action)
+    actions.reverse()
+    return actions
 
-    # loop while we still have unexplored nodes
-    while not frontier.isEmpty():
-
-        # choose a leaf node and remove it from frontier
-        leaf_node = frontier.pop()
-
-        # add the node to explored set
-        explored_set.append(leaf_node)
-
-        # expand the chosen node
-        # and add to the frontier if not in frontier and explored set
-        for successor in problem.getSuccessors(leaf_node):
-            child, action, _ = successor
-            if child not in explored_set and child not in frontier.list:
-                # return the solution if it is the goal state
-                if problem.isGoalState(child):
-                    return actions_list[leaf_node] + [action]
-                frontier.push(child)
-                actions_list[child] = actions_list[leaf_node] + [action]
-    else:
-        # search through all but still can't find a solution -> failed!
-        return 'failure'
 
 
 
