@@ -315,7 +315,7 @@ class CornersProblem(search.SearchProblem):
         # check if  all corners are visited
         # first sort the tuples then check 
         
-        return sorted(self.corners) == sorted(state[1])
+        return self.corners == state[1]
 
     def getSuccessors(self, state):
         """
@@ -349,6 +349,7 @@ class CornersProblem(search.SearchProblem):
                     # can't just append it to tuple (immutable)
                     ls= list(state[1])
                     ls.append((nextx,nexty))
+                    ls.sort()
                     new_visited = tuple(ls)
                     successors.append(( 
                     ((nextx,nexty),new_visited) , action ,  1))  #(state , action cost)
@@ -388,7 +389,11 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
+    h = 0
+    for corner in corners:
+        if corner not in state[1]:
+            h = max(h, abs(state[0][0] - corner[0]) + abs(state[0][1] - corner[1]))
+    return h
     "*** YOUR CODE HERE ***"
     return 0 # Default to trivial solution
 
