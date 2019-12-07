@@ -161,6 +161,7 @@ def breadthFirstSearch(problem):
 
 
 
+
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     pq = util.PriorityQueue()

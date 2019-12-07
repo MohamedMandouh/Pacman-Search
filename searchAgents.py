@@ -293,7 +293,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        self.visited = ()
+        
         
         
 
@@ -342,15 +342,19 @@ class CornersProblem(search.SearchProblem):
             dx , dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
+            
             if not hitsWall :
-                if (nextx,nexty) in self.corners and (nextx,nexty) not in self.visited :
+                if (nextx,nexty) in self.corners and (nextx,nexty) not in state[1] :
                     # if reached a corner not visited yet add it to visited tuple  
                     # can't just append it to tuple (immutable)
-                    ls= list(self.visited)
+                    ls= list(state[1])
                     ls.append((nextx,nexty))
-                    self.visited = tuple(ls)
-                successors.append(( 
-                    ((nextx,nexty),self.visited) , action ,  1))  #(state , action cost)
+                    new_visited = tuple(ls)
+                    successors.append(( 
+                    ((nextx,nexty),new_visited) , action ,  1))  #(state , action cost)
+                else :
+                     successors.append(( 
+                    ((nextx,nexty),state[1]) , action ,  1))  #(state , action cost)
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
