@@ -315,7 +315,7 @@ class CornersProblem(search.SearchProblem):
         # check if  all corners are visited
         # first sort the tuples then check 
         
-        return sorted(self.corners) == sorted(state[1])
+        return self.corners == state[1]
 
     def getSuccessors(self, state):
         """
@@ -349,6 +349,7 @@ class CornersProblem(search.SearchProblem):
                     # can't just append it to tuple (immutable)
                     ls= list(state[1])
                     ls.append((nextx,nexty))
+                    ls.sort()
                     new_visited = tuple(ls)
                     successors.append(( 
                     ((nextx,nexty),new_visited) , action ,  1))  #(state , action cost)
